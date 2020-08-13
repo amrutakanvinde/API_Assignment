@@ -1,3 +1,21 @@
 body {
-    background-color: teal;
+    background-color:white;
+}
+
+.darkCol {
+    background-color: #263238; 
+    color:white;
+}
+
+.colWidth{
+    width: 13%;
+}
+
+.lnkColor {
+    color: #66B16E;
+}
+
+.lnkColor:hover {
+    cursor: pointer;
+    color: #12f228;
 }

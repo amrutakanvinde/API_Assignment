@@ -1,6 +1,8 @@
 
 let mainDiv = document.getElementById("#main");
 let table = document.querySelector('table');
+let divModal = document.querySelector(".modal-body");
+let divModalTitle = document.getElementById("exampleModalLabel");
 
 fetch('https://ghibliapi.herokuapp.com/films')
 .then(function(response){
@@ -15,48 +17,93 @@ fetch('https://ghibliapi.herokuapp.com/films')
     console.log(err);
 })
 
-let personName = "";
-function getPeople(url){
-    
 
-    fetch(url)
+function getPeopleById(url, id){
+    if(url !== ""){
+        fetch(url)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(json){
+
+            // console.log(json);
+
+            let lnk = document.createElement('a');
+            let col = document.getElementById('col' + id);
+
+            lnk.innerHTML = json.name + ', ';
+            // lnk.setAttribute("href", json.url)
+            lnk.setAttribute('class', 'lnkColor');
+            lnk.setAttribute('data-toggle', 'modal');
+            lnk.setAttribute('data-target', '#exampleModal');
+            lnk.setAttribute('id',json.id);
+            lnk.addEventListener('click', callme);
+            
+            col.appendChild(lnk);
+            
+        })
+        .catch(function(err){
+            console.log(err);
+        })
+    } 
+}
+let globalPeopleId = "";
+
+function callme(e){
+    // console.log(this.id);
+
+    globalPeopleId = this.id;
+    fetch('https://ghibliapi.herokuapp.com/people')
     .then(function(response){
-        // console.log(response.json());
         return response.json();
     })
     .then(function(json){
-        // 
-        personName = json.name;
-        // console.log(personName);
-        // declare a new function call here to display rows
+
+        for(let i = 0; i < json.length; i++){
+            
+            if(globalPeopleId === json[i].id){
+                // console.log("FIRED", json[i].name);
+                
+                divModalTitle.innerHTML = json[i].name;
+                divModal.innerHTML = 'Gender: ' + json[i].gender + "<br/> Age: " + json[i].age + "<br/> Eye Color: " + json[i].eye_color + "<br/> Hair Color: " + json[i].hair_color ;
+            }
+        }
     })
     .catch(function(err){
         console.log(err);
     })
-
-    console.log(personName);
-    return personName;
-
 }
+
 function displayData(json) {
 
-    let newRow = "";
     for(arr of json){
-        // console.log(arr.people);
-        if(arr.people.length > 1){
-            // console.log("length",arr.people.length);
-            
-            console.log(getPeople(arr.people[0]));
-            //call function rows somewhere here
-        }
-        newRow = document.createElement('tr');
-        let newCol = document.createElement('td');
-        let newCol2 = document.createElement('td');
-        newCol.innerHTML = arr.title;
-        newCol2.innerHTML = arr.people;
+    
+        let colTitle = document.createElement('td');
+        let newRow = document.createElement('tr');
+        let colDescription = document.createElement('td');
+        let colPeople = document.createElement('td');
+        let colDirector = document.createElement('td');
+        
+        colPeople.setAttribute("id", "col" + arr.id);
+        colPeople.setAttribute('class', 'darkCol');
+        colTitle.innerHTML = arr.title;
+        colDescription.innerHTML = arr.description;
+        colDirector.innerHTML = arr.director;
+        colDirector.setAttribute("class", 'darkCol');
+
+
         table.appendChild(newRow);
-        newRow.appendChild(newCol);
-        newRow.appendChild(newCol2);
+        newRow.appendChild(colTitle);
+        newRow.appendChild(colDescription);
+        newRow.appendChild(colDirector);
+
+        if(arr.people !== undefined && arr.people.length > 1){
+            arr.people.forEach(element => {
+                getPeopleById(element,arr.id);
+            });
+        }
+        newRow.appendChild(colPeople);
     }
     
 }
+
