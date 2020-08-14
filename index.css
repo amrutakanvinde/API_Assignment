@@ -19,3 +19,7 @@ body {
     cursor: pointer;
     color: #12f228;
 }
+
+#title {
+   font-family: sans-serif;
+}

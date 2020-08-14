@@ -37,7 +37,7 @@ function getPeopleById(url, id){
             lnk.setAttribute('data-toggle', 'modal');
             lnk.setAttribute('data-target', '#exampleModal');
             lnk.setAttribute('id',json.id);
-            lnk.addEventListener('click', callme);
+            lnk.addEventListener('click', getPeopleDetails);
             
             col.appendChild(lnk);
             
@@ -49,7 +49,7 @@ function getPeopleById(url, id){
 }
 let globalPeopleId = "";
 
-function callme(e){
+function getPeopleDetails(e){
     // console.log(this.id);
 
     globalPeopleId = this.id;
